@@ -1,0 +1,204 @@
+#
+#
+#
+#
+====================================================
+	++++ ОСНОВНОЕ ПРАКТИЧЕСКОЕ ЗАДАНИЕ ++++
+====================================================
+#
+#
+#
+#
+
+
+++++++++++++++++++++
+СОЗДАНИЕ БД example
+++++++++++++++++++++
+
+mysql
+
+CREATE DATABASE example;
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+СОЗДАНИЕ СТОБЦОВ id;name; В ТАБЛИЦе users БД example
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+USE example;	
+	
+CREATE TABLE users (id INT UNSIGNED, name VARCHAR(255) COMMENT 'Имя пользователя') COMMENT = 'Пользователи';	
+	
+SELECT * FROM users;	
+	
+DESCRIBE users;	
+	
+	+-------+--------------+------+-----+---------+-------+
+	| Field | Type         | Null | Key | Default | Extra |
+	+-------+--------------+------+-----+---------+-------+
+	| id    | int unsigned | YES  |     | NULL    |       |
+	| name  | varchar(255) | YES  |     | NULL    |       |
+	+-------+--------------+------+-----+---------+-------+
+	
+ALTER TABLE users CHANGE id id INT UNSIGNED NOT NULL;	
+	
+	+-------+--------------+------+-----+---------+-------+
+	| Field | Type         | Null | Key | Default | Extra |
+	+-------+--------------+------+-----+---------+-------+
+	| id    | int unsigned | NO   |     | NULL    |       |
+	| name  | varchar(255) | YES  |     | NULL    |       |
+	+-------+--------------+------+-----+---------+-------+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++
+СОЗДАНИЕ ДАМПа БД example
+++++++++++++++++++++++++++++++++++++++++
+
+mysqldump -u newroot example > ./example.mysql.bkp1
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++
+РАЗМЕЩЕНИЕ ДАМПа БД example В БД sample
+++++++++++++++++++++++++++++++++++++++++
+
+mysqladmin -u newroot create sample	
+	
+mysql sample < ./example.mysql.bkp1	
+	
+mysql sample	
+	
+SHOW TABLES;	
+	
+	+-------------------+
+	| Tables_in_example |
+	+-------------------+
+	| users             |
+	+-------------------+
+	
+DESCRIBE users;	
+	
+	+-------+--------------+------+-----+---------+-------+
+	| Field | Type         | Null | Key | Default | Extra |
+	+-------+--------------+------+-----+---------+-------+
+	| id    | int unsigned | NO   |     | NULL    |       |
+	| name  | varchar(255) | YES  |     | NULL    |       |
+	+-------+--------------+------+-----+---------+-------
+	
+	
+SHOW TABLES FROM example;	
+	
+	+-------------------+
+	| Tables_in_example |
+	+-------------------+
+	| users             |
+	+-------------------+
+	
+	
+DESCRIBE example.users;	
+	
+	+-------+--------------+------+-----+---------+-------+
+	| Field | Type         | Null | Key | Default | Extra |
+	+-------+--------------+------+-----+---------+-------+
+	| id    | int unsigned | NO   |     | NULL    |       |
+	| name  | varchar(255) | YES  |     | NULL    |       |
+	+-------+--------------+------+-----+---------+-------+
+	
+
+
+
+
+++++++++++++++++++++++++
+СОЗДАНИЕ ДАМПа БД sample
+++++++++++++++++++++++++
+
+mysqldump -u newroot sample > ./sample.mysql.bkp1	
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Размещение ДАМПа ТАБЛИЦы users (с данными) из БД example В БД sample
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	
+mysql example	
+	
+INSERT INTO users VALUE (0,'base name 4 all');	
+	
+SELECT * FROM example.users;	
+	
+	+----+-----------------+
+	| id | name            |
+	+----+-----------------+
+	|  0 | base name 4 all |
+	+----+-----------------+
+	
+
+mysqldump -u newroot example users > ./db_example.tb_users.mysql.bkp1	
+	
+mysql -u newroot sample < ./db_example.tb_users.mysql.bkp1	
+	
+mysql sample	
+	
+SELECT * FROM sample.users;	
+	
+	+----+-----------------+
+	| id | name            |
+	+----+-----------------+
+	|  0 | base name 4 all |
+	+----+-----------------+
+
+
+
+
+#
+#
+#
+#
+============================================================	
+============================================================
+	++++++++ ДОПОЛНИТЕЛЬНОЕ ЗАДАНИЕ ++++++++
+============================================================
+============================================================
+#
+#
+#
+#
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Дамп 100 первых записей из таблицы help_keyword базы данных mysql.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mysql example	
+	
+DESCRIBE mysql.help_keyword;	
+
+CREATE TABLE copy_help
+    -> SELECT *
+    -> FROM mysql.help_keyword
+    -> LIMIT 100;
+
+SELECT * FROM example.copy_help;
+
+mysqldump -u newroot example copy_help > ./db_example.tb_copy_100_help.mysql.bkp1
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Дамп 10 последних записей из таблицы help_keyword базы данных mysql.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+DESCRIBE mysql.help_keyword;
+
+CREATE TABLE copy_last_help SELECT * FROM mysql.help_keyword ORDER BY help_keyword_id DESC LIMIT 10;
+
+SELECT * FROM example.copy_last_help;
+
+mysqldump -u newroot example copy_last_help > ./db_example.tb_copy_last_help.mysql.bkp1
+
+

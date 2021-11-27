@@ -1,0 +1,45 @@
+#
+#
+#
+#
+============================================================	
+============================================================
+	++++++++ ДОПОЛНИТЕЛЬНОЕ ЗАДАНИЕ ++++++++
+============================================================
+============================================================
+#
+#
+#
+#
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Дамп 100 первых записей из таблицы help_keyword базы данных mysql.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+mysql example	
+	
+DESCRIBE mysql.help_keyword;	
+
+CREATE TABLE copy_help
+    -> SELECT *
+    -> FROM mysql.help_keyword
+    -> LIMIT 100;
+
+SELECT * FROM example.copy_help;
+
+mysqldump -u newroot example copy_help > ./db_example.tb_copy_100_help.mysql.bkp1
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Дамп 10 последних записей из таблицы help_keyword базы данных mysql.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+DESCRIBE mysql.help_keyword;
+
+CREATE TABLE copy_last_help SELECT * FROM mysql.help_keyword ORDER BY help_keyword_id DESC LIMIT 10;
+
+SELECT * FROM example.copy_last_help;
+
+mysqldump -u newroot example copy_last_help > ./db_example.tb_copy_last_help.mysql.bkp1
